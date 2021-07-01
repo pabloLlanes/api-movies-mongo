@@ -12,6 +12,7 @@ class Server {
     this.port = configEnv.srvPort;
 
     this.usersPath = "/api/users";
+    this.authPath = "/api/auth";
 
     //db connection
     this.dbConnection();
@@ -38,6 +39,8 @@ class Server {
   //routes
   routes() {
     this.app.use(this.usersPath, require("../api/users/users.routes"));
+    this.app.use(this.authPath, require("../routes/auth"));
+
     //The 404 Route (ALWAYS Keep this as the last route)
     this.app.get("*", (_, res) => {
       res.status(404).json({ msg: "error: route not encountered" });
