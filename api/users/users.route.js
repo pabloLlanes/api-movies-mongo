@@ -1,6 +1,18 @@
 const { Router } = require("express");
-const { isEmailResgistered } = require("../../middlewares/verifyEmail");
-//const { check } = require("express-validator");
+const { check } = require("express-validator");
+const {
+  inputsValidate,
+  verifyJwt,
+  isAdminRole,
+  ifExistRole,
+} = require("../../middlewares");
+
+const {
+  isValidRole,
+  verifyDuplicateEmail,
+  verifyUserById,
+} = require("../../helpers/dbValidators");
+
 const {
   getAllUsers,
   getSingleUser,
@@ -18,16 +30,29 @@ router.get("/", getAllUsers);
 //get a single user
 router.get("/:id", getSingleUser);
 
-//post
-router.post("/", isEmailResgistered, createUser);
+//create user
+router.post(
+  "/",
+  [
+    check("name", "name is required and min: 2 , max: 20 characters")
+      .not()
+      .isEmpty()
+      .isLength({ min: 2, max: 20 }),
+    check("email", "invalid format email").isEmail(),
+    check("email").custom(verifyDuplicateEmail),
+    check("password", "min characters: 6 ").isLength({ min: 6 }),
+    inputsValidate,
+  ],
+  createUser
+);
 
-//put
+//update user
 router.put("/:id", updateUser);
 
-//delete user
+//disable user
 router.delete("/:id", deleteUser);
 
-//delete user
+// delete user
 router.delete("/delete/:id", hardDeleteUser);
 
 module.exports = router;

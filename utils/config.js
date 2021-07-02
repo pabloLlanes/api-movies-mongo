@@ -5,7 +5,7 @@ const configEnv = {
 
   mongoLocal: process.env.MONGODBLOCAL,
 
-  
+  privateKey: process.env.PRIVATEKEY,
 };
 
 module.exports = { configEnv };

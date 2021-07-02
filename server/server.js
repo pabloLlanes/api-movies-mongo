@@ -38,8 +38,8 @@ class Server {
 
   //routes
   routes() {
-    this.app.use(this.usersPath, require("../api/users/users.routes"));
-    this.app.use(this.authPath, require("../routes/auth"));
+    this.app.use(this.usersPath, require("../api/users/users.route"));
+    this.app.use(this.authPath, require("../api/auth/auth.route"));
 
     //The 404 Route (ALWAYS Keep this as the last route)
     this.app.get("*", (_, res) => {
