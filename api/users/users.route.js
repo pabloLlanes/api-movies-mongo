@@ -1,11 +1,6 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
-const {
-  inputsValidate,
-  verifyJwt,
-  isAdminRole,
-  ifExistRole,
-} = require("../../middlewares");
+const { inputsValidate, verifyJwt, checkRoles } = require("../../middlewares");
 
 const {
   isValidRole,
@@ -34,12 +29,15 @@ router.get("/:id", getSingleUser);
 router.post(
   "/",
   [
-    check("name", "name is required and min: 2 , max: 20 characters")
-      .not()
-      .isEmpty()
-      .isLength({ min: 2, max: 20 }),
-    check("email", "invalid format email").isEmail(),
+    checkRoles,
+    check("name", "name is required").isLength({ min: 2, max: 20 }),
+
+    check("email", "email input is empty or invalid")
+      .isEmail()
+      .isLength({ min: 10, max: 40 }),
+
     check("email").custom(verifyDuplicateEmail),
+
     check("password", "min characters: 6 ").isLength({ min: 6 }),
     inputsValidate,
   ],
@@ -47,8 +45,19 @@ router.post(
 );
 
 //update user
-router.put("/:id", updateUser);
+//put
+router.put(
+  "/:id",
+  verifyJwt,
 
+  [
+    check("id", "invalid user ID").isMongoId(),
+    check("id").custom(verifyUserById),
+    check("role").custom(isValidRole),
+    inputsValidate,
+  ],
+  updateUser
+);
 //disable user
 router.delete("/:id", deleteUser);
 

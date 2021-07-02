@@ -1,9 +1,9 @@
 const inputsValidate = require("./inputsValidate");
 const jwtValidate = require("./jwtValidate");
-const roleValidate = require("./roleValidate");
+const verifyRole = require("./verifyRole");
 
 module.exports = {
   ...inputsValidate,
   ...jwtValidate,
-  ...roleValidate,
+  ...verifyRole,
 };

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../api/users/user.model");
 
 const verifyJwt = async (req = request, res = response, next) => {
-  const token = req.header("x-access-token");
+  const token = req.header["x-access-token"];
   if (!token) {
     return res.status(401).json({ msg: "unauthorize, token is required" });
   }

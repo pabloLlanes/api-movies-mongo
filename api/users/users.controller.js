@@ -1,6 +1,7 @@
 const { response, request } = require("express");
 
 const User = require("./user.model");
+const Role = require("../roles/role.model");
 
 /**
  * get a single user
@@ -41,7 +42,10 @@ const getAllUsers = async (req = request, res = response) => {
   try {
     const [total, users] = await Promise.all([
       User.countDocuments(query),
-      User.find(query).skip(Number(from)).limit(Number(limit)),
+      User.find(query)
+        .populate("roles")
+        .skip(Number(from))
+        .limit(Number(limit)),
     ]);
 
     res.json({
@@ -61,7 +65,7 @@ const getAllUsers = async (req = request, res = response) => {
  */
 const createUser = async (req = response, res = request) => {
   try {
-    const { name, username, email, password } = req.body;
+    const { name, username, email, password, roles } = req.body;
 
     const newUser = new User({
       name,
@@ -70,12 +74,16 @@ const createUser = async (req = response, res = request) => {
       password: await User.encryptPassword(password),
     });
 
-    await newUser.save();
+    const foundRoles = await Role.find({ name: { $in: roles } });
+    console.log(foundRoles);
+
+    newUser.roles = foundRoles.map((role) => role._id);
+
+    const saveUser = await newUser.save();
 
     res.status(201).json({
       msg: "create user ok",
-      name,
-      email,
+      saveUser,
     });
   } catch (e) {
     console.error(e);
