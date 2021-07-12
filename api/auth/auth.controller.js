@@ -17,7 +17,7 @@ const login = async (req = request, res = response) => {
     //verify active user
     if (!user.enable) {
       return res.status(400).json({
-        msg: "user is disable",
+        msg: "user is disable"
       });
     }
 
@@ -29,22 +29,20 @@ const login = async (req = request, res = response) => {
         .status(401)
         .json({ token: null, message: "invalid user or password" });
 
-    console.log(matchPassword);
-
     const token = jwt.sign({ id: user._id }, configEnv.privateKey, {
-      expiresIn: 84600,
+      expiresIn: 84600
     });
     res.json({
       msg: `welcome ${user.name}`,
-      token,
+      token
     });
   } catch (e) {
     console.error(e);
     res.status(500).json({
-      msg: "internal server error: login",
+      msg: "internal server error: login"
     });
   }
 };
 module.exports = {
-  login,
+  login
 };

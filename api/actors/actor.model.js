@@ -1,18 +1,12 @@
 const { Schema, model } = require("mongoose");
 
-const MovieSchema = Schema(
+const ActorSchema = Schema(
   {
     name: {
       type: String,
       required: [true, "name is required"],
       unique: true
     },
-    actors: [
-      {
-        ref: "Actor",
-        type: Schema.Types.ObjectId
-      }
-    ],
     enable: {
       type: Boolean,
       default: true
@@ -23,4 +17,4 @@ const MovieSchema = Schema(
   }
 );
 
-module.exports = model("Movie", MovieSchema);
+module.exports = model("Actor", ActorSchema);

@@ -11,8 +11,10 @@ class Server {
 
     this.port = configEnv.srvPort;
 
-    this.usersPath = "/api/users";
     this.authPath = "/api/auth";
+    this.moviesPath = "/api/movies";
+    this.usersPath = "/api/users";
+    this.actorsPath = "/api/actors";
 
     //db connection
     this.dbConnection();
@@ -38,8 +40,10 @@ class Server {
 
   //routes
   routes() {
-    this.app.use(this.usersPath, require("../api/users/users.route"));
     this.app.use(this.authPath, require("../api/auth/auth.route"));
+    this.app.use(this.usersPath, require("../api/users/users.route"));
+    this.app.use(this.moviesPath, require("../api/movies/movies.route"));
+    this.app.use(this.actorsPath, require("../api/actors/actors.route"));
 
     //The 404 Route (ALWAYS Keep this as the last route)
     this.app.get("*", (_, res) => {

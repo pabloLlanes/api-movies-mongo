@@ -5,18 +5,13 @@ const { login } = require("./auth.controller");
 
 const {
   inputsValidate,
-  verifyJwt,
   checkRoles,
-  setDefaultRole,
+  setDefaultRole
 } = require("../../middlewares");
 
 const { createUser } = require("../users/users.controller");
 
-const {
-  isValidRole,
-  verifyDuplicateEmail,
-  verifyUserById,
-} = require("../../helpers/dbValidators");
+const { verifyDuplicateEmail } = require("../../helpers/dbValidators");
 
 const router = Router();
 
@@ -34,7 +29,7 @@ router.post(
 
     check("password", "min characters: 6 ").isLength({ min: 6 }),
 
-    inputsValidate,
+    inputsValidate
   ],
   createUser
 );
@@ -46,7 +41,7 @@ router.post(
 
     check("password", "min characters: 6 ").isLength({ min: 6 }),
 
-    inputsValidate,
+    inputsValidate
   ],
   login
 );

@@ -1,16 +1,17 @@
 const { response, request } = require("express");
 
 const Movie = require("./movie.model");
+const Actor = require("../actors/actor.model");
 
 /**
  * get a single movie
  */
 const getSingleMovie = async (req = response, res = request) => {
   const { id } = req.params;
-
+  
   try {
     const movie = await Movie.findById(id);
-
+    console.log(movie);
     if (!movie) {
       return res.status(404).json({ msg: "movie not found" });
     }
@@ -42,7 +43,7 @@ const getAllMovies = async (req = request, res = response) => {
     const [total, movies] = await Promise.all([
       Movie.countDocuments(query),
       Movie.find(query)
-        .populate("roles")
+        .populate("actors")
         .skip(Number(from))
         .limit(Number(limit))
     ]);
@@ -64,15 +65,16 @@ const getAllMovies = async (req = request, res = response) => {
  */
 const createMovie = async (req = response, res = request) => {
   try {
-    const { name } = req.body;
+    const { name, actors = [] } = req.body;
 
     const newMovie = new Movie({
       name
     });
 
-    const foundRoles = await Role.find({ name: { $in: roles } });
+    const foundActors = await Actor.find({ name: { $in: actors } });
+    console.log(foundActors.length);
 
-    newMovie.roles = foundRoles.map((role) => role._id);
+    newMovie.actors = foundActors.map((actor) => actor._id);
 
     const saveMovie = await newMovie.save();
 
